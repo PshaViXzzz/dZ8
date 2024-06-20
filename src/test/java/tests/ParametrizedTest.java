@@ -17,6 +17,18 @@ import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Selenide.*;
 
 public class ParametrizedTest extends TestBase {
+    @CsvSource(value = {
+            "Москва | Москва, Россия",
+            "Санкт-Петербург | Санкт-Петербург, Россия"
+    },
+            delimiter = '|')
+    @ParameterizedTest(name = "Для поискового запроса {0} должен находить запрос {1}")
+    void simpleEnumSourceHotelsTest(String city, String expectedSearchResult) {
+        open(baseUrl);
+        $(".search-field-wrapper input").setValue(city);
+        $(".ui-menu-item a").shouldHave(text(expectedSearchResult));
+    }
+
     @EnumSource(Language.class)
     @ParameterizedTest
     void simpleEnumSourceHotelsTest(Language language) {
@@ -35,17 +47,5 @@ public class ParametrizedTest extends TestBase {
         open(baseUrl);
         $$(".toggle-language a").find(text(language.name())).click();
         $$(".search-form span").filter(visible).shouldHave(texts(expectedFieldNames));
-    }
-
-    @CsvSource(value = {
-            "Москва | Москва, Россия",
-            "Санкт-Петербург | Санкт-Петербург, Россия"
-    },
-            delimiter = '|')
-    @ParameterizedTest(name = "Для поискового запроса {0} должен находить запрос {1}")
-    void simpleEnumSourceHotelsTest(String city, String expectedSearchResult) {
-        open(baseUrl);
-        $(".search-field-wrapper input").setValue(city);
-        $(".ui-menu-item a").shouldHave(text(expectedSearchResult));
     }
 }
