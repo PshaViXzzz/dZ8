@@ -1,5 +1,7 @@
 package tests;
 
+import com.codeborne.selenide.Selenide;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -17,6 +19,10 @@ import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Selenide.*;
 
 public class ParametrizedTest extends TestBase {
+    @AfterEach
+    void afterEach() {
+        Selenide.closeWebDriver();
+    }
     @CsvSource(value = {
             "Москва | Москва, Россия",
             "Санкт-Петербург | Санкт-Петербург, Россия"
@@ -26,6 +32,7 @@ public class ParametrizedTest extends TestBase {
     void simpleEnumSourceHotelsTest(String city, String expectedSearchResult) {
         open(baseUrl);
         $(".search-field-wrapper input").setValue(city);
+        sleep(10000);
         $(".ui-menu-item a").shouldHave(text(expectedSearchResult));
     }
 
@@ -38,7 +45,8 @@ public class ParametrizedTest extends TestBase {
     }
 
     static Stream<Arguments> simpleMethodSourceHotelsTest() {
-        return Stream.of(Arguments.of(Language.EN, List.of("PLACE OR NAME OF THE HOTEL", "ARRIVAL DATE", "26JUN", "JUN", "DEPARTURE DATE", "27JUN", "JUN", "ADULTS", "CHILDREN", "ADD GUESTS", "")), Arguments.of(Language.RU, List.of("МЕСТО ИЛИ НАЗВАНИЕ ОТЕЛЯ", "ДАТА ЗАЕЗДА", "26ИЮН", "ИЮН", "ДАТА ВЫЕЗДА", "27ИЮН", "ИЮН", "ВЗРОСЛЫЕ", "ДЕТИ", "БОЛЬШЕ\nГОСТЕЙ", "")));
+        return Stream.of(Arguments.of(Language.EN, List.of("PLACE OR NAME OF THE HOTEL", "ARRIVAL DATE", "08OCT", "OCT", "DEPARTURE DATE", "09OCT", "OCT", "ADULTS", "CHILDREN", "ADD GUESTS", "")),
+                Arguments.of(Language.RU, List.of("МЕСТО ИЛИ НАЗВАНИЕ ОТЕЛЯ", "ДАТА ЗАЕЗДА", "08ОКТ", "ОКТ", "ДАТА ВЫЕЗДА", "09ОКТ", "ОКТ", "ВЗРОСЛЫЕ", "ДЕТИ", "БОЛЬШЕ\nГОСТЕЙ", "")));
     }
 
     @MethodSource
